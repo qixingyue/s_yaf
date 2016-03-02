@@ -12,13 +12,17 @@ class Daemon {
 		if(!is_callable($daemonTask)){
 			throw new Yaf_Exception("daemonTask must can be called ! ");
 		}
-		if(!extension_loaded("pcntl")){
+		if(!extension_loaded("pcntl") || !extension_loaded("posix")){
 			throw new Yaf_Exception("pcntl must loaded ! ");
 		}
 		$pid = pcntl_fork();
 		if($pid == 0) {
 			//child process
 
+			set_time_limit(0);
+			chdir("/");
+			umask(0);
+	
 			self::dup2Stdout($stdoutfile);	
 			self::dup2Stdin($stdinfile);	
 
