@@ -53,4 +53,19 @@ class Daemon {
 		}
 	}
 
+	public function runIgnore($task){
+		if(!is_callable($task)){
+			throw new Yaf_Exception("daemonTask must can be called ! ");
+		}
+		$pid = pcntl_fork();
+		if($pid == 0) {
+			call_user_func($task);
+			exit();
+		} else if($pid > 0 ){
+			return true;	
+		} else {
+			return false;	
+		}
+	}
+
 }
